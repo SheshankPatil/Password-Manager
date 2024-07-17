@@ -55,6 +55,7 @@ bool LoginUser() {
 int main() {
   int choice;
   cout << "1. Register\n2. Login\n" << endl;
+  cin>>choice;
   if (choice == 1) {
     RegisterUser();
   } else if (choice == 2) {
