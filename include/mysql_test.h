@@ -5,11 +5,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void finish_with_error(MYSQL *con); 
-int insert_user(MYSQL *con);
-void insert_password(MYSQL *con, int user_id);
-void retrieve_user_password(MYSQL *con, int user_id);
- 
+MYSQL Connection_establish();
+void finish_with_error(MYSQL *con);
+int insert_user(MYSQL *con, char *username, char *password);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
