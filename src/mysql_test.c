@@ -3,21 +3,49 @@
 #include <stdlib.h>
 #include <string.h>
 
-void finish_with_error(MYSQL *con) 
-{
+// Error handling function
+void finish_with_error(MYSQL *con) {
     fprintf(stderr, "%s\n", mysql_error(con));
     mysql_close(con);
     exit(1);
 }
 
-int insert_user(MYSQL *con)
- {
+// Function to insert a new user
+int insert_user(MYSQL *con) {
     char username[50];
     char master_password_hash[255];
+    MYSQL_RES *result;
+    MYSQL_ROW row;
 
-    // Input for users table
-    printf("Enter username: ");
-    scanf("%49s", username);
+    while (1) {
+        // Input for users table
+        printf("Enter username: ");
+        scanf("%49s", username);
+
+        // Check if username already exists
+        char check_query[256];
+        snprintf(check_query, sizeof(check_query), "SELECT user_id FROM users WHERE username='%s'", username);
+
+        if (mysql_query(con, check_query)) {
+            finish_with_error(con);
+        }
+
+        result = mysql_store_result(con);
+
+        if (result == NULL) {
+            finish_with_error(con);
+        }
+
+        row = mysql_fetch_row(result);
+        mysql_free_result(result);
+
+        if (row) {
+            printf("Username already taken. Please enter a different username.\n");
+        } else {
+            break;
+        }
+    }
+
     printf("Enter master password hash: ");
     scanf("%254s", master_password_hash);
 
@@ -36,6 +64,7 @@ int insert_user(MYSQL *con)
     return user_id;
 }
 
+// Function to insert a new password entry for a user
 void insert_password(MYSQL *con, int user_id) {
     char site_name[100];
     char site_username[100];
@@ -67,6 +96,7 @@ void insert_password(MYSQL *con, int user_id) {
     printf("Password data inserted successfully.\n");
 }
 
+// Function to retrieve a user's password entry based on site name and username
 void retrieve_user_password(MYSQL *con, int user_id) {
     char site_name[100];
     char site_username[100];
@@ -103,6 +133,46 @@ void retrieve_user_password(MYSQL *con, int user_id) {
     mysql_free_result(result);
 }
 
+// Function to handle user login
+int login_user(MYSQL *con) {
+    char username[50];
+    char master_password_hash[255];
+    MYSQL_RES *result;
+    MYSQL_ROW row;
+
+    printf("Enter username: ");
+    scanf("%49s", username);
+    printf("Enter master password hash: ");
+    scanf("%254s", master_password_hash);
+
+    char login_query[512];
+    snprintf(login_query, sizeof(login_query),
+             "SELECT user_id FROM users WHERE username='%s' AND master_password_hash='%s'",
+             username, master_password_hash);
+
+    if (mysql_query(con, login_query)) {
+        finish_with_error(con);
+    }
+
+    result = mysql_store_result(con);
+
+    if (result == NULL) {
+        finish_with_error(con);
+    }
+
+    row = mysql_fetch_row(result);
+    mysql_free_result(result);
+
+    if (row) {
+        printf("Login successful. User ID: %s\n", row[0]);
+        return atoi(row[0]);
+    } else {
+        printf("Invalid username or master password hash.\n");
+        return -1;
+    }
+}
+
+// Main function
 int main() {
     MYSQL *con = mysql_init(NULL);
 
@@ -116,39 +186,47 @@ int main() {
         finish_with_error(con);
     }
 
-    int mode;
-    printf("Enter mode (1 for register, 2 for retrieve): ");
-    scanf("%d", &mode);
+    int exit_program = 0;
 
-    switch (mode) {
-        case 1: {
-            int user_id = insert_user(con);
-            int action;
-            printf("Enter action (1 to insert password, 2 to retrieve password): ");
-            scanf("%d", &action);
-            switch (action) {
-                case 1:
-                    insert_password(con, user_id);
-                    break;
-                case 2:
-                    retrieve_user_password(con, user_id);
-                    break;
-                default:
-                    fprintf(stderr, "Invalid action entered.\n");
-                    break;
+    while (!exit_program) {
+        int mode;
+        printf("\nEnter mode (1 for register, 2 for login, 3 to exit): ");
+        scanf("%d", &mode);
+
+        switch (mode) {
+            case 1:
+                insert_user(con);
+                break;
+            case 2: {
+                int user_id = login_user(con);
+                if (user_id != -1) {
+                    int action;
+                    printf("Enter action (1 to insert password, 2 to retrieve password, 3 to logout): ");
+                    scanf("%d", &action);
+                    switch (action) {
+                        case 1:
+                            insert_password(con, user_id);
+                            break;
+                        case 2:
+                            retrieve_user_password(con, user_id);
+                            break;
+                        case 3:
+                            printf("Logging out...\n");
+                            break;
+                        default:
+                            fprintf(stderr, "Invalid action entered.\n");
+                            break;
+                    }
+                }
+                break;
             }
-            break;
+            case 3:
+                exit_program = 1;
+                break;
+            default:
+                fprintf(stderr, "Invalid mode entered.\n");
+                break;
         }
-        case 2: {
-            int user_id;
-            printf("Enter user ID to retrieve password: ");
-            scanf("%d", &user_id);
-            retrieve_user_password(con, user_id);
-            break;
-        }
-        default:
-            fprintf(stderr, "Invalid mode entered.\n");
-            break;
     }
 
     mysql_close(con);
