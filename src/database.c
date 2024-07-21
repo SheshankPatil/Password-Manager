@@ -18,7 +18,7 @@ MYSQL Connection_establish() {
     exit(1);
   }
 
-  if (mysql_real_connect(con, "localhost", "peace", "2209",
+  if (mysql_real_connect(con, "localhost", "root", "password",
                          "password_manager", 0, NULL, 0) == NULL) {
     finish_with_error(con);
   }

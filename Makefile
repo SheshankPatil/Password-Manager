@@ -1,23 +1,39 @@
+# Compiler
 CXX = g++
-CXXFLAGS = -Iinclude -Wall -std=c++11
-SRC_DIR = src
-OBJ_DIR = obj
-BIN_DIR = bin
-SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-TARGET = $(BIN_DIR)/program
+CC = gcc
 
+# Compiler flags
+CXXFLAGS = -I../include
+CFLAGS = -I../include
+
+# Linker flags
+LDFLAGS = -lmysqlclient
+
+# Source files
+C_SRCS = src/database.c
+CXX_SRCS = src/main.cpp src/password_id.cpp src/user_management.cpp
+
+# Object files
+OBJS = $(C_SRCS:.c=.o) $(CXX_SRCS:.cpp=.o)
+
+# Executable
+TARGET = password_manager
+
+# Default target
 all: $(TARGET)
 
-$(TARGET): $(OBJECTS)
-	@mkdir -p $(BIN_DIR)
-	$(CXX) $(OBJECTS) -o $@
+# Link the executable
+$(TARGET): $(OBJS)
+	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(@D)
+# Compile C++ source files
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+# Compile C source files
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: all clean
+# Clean up the build
+clean:
+	rm -f $(OBJS) $(TARGET)
