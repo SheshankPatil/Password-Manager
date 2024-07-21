@@ -12,7 +12,10 @@ extern "C" {
 MYSQL Connection_establish();
 void finish_with_error(MYSQL *con);
 int insert_user(MYSQL *con, char *username, char *password);
-
+void insert_password(MYSQL *con, int user_id);
+void retrieve_user_password(MYSQL *con, int user_id);
+int login_user(MYSQL *con);
+ 
 #ifdef __cplusplus
 }
 #endif
