@@ -9,6 +9,6 @@
 using namespace std;
 string getPassword();
 int RegisterUser(MYSQL *con);
-int LoginUser();
+int LoginUser(MYSQL *con);
 
 #endif // USER_MANAGEMENT_H

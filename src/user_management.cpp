@@ -5,7 +5,8 @@
 
 using namespace std;
 
-string getPassword() {
+string getPassword()
+{
   string password;
   struct termios oldt, newt;
   tcgetattr(STDIN_FILENO, &oldt);
@@ -24,39 +25,46 @@ string getPassword() {
   return password;
 }
 
-int RegisterUser(MYSQL *con) {
+int RegisterUser(MYSQL *con)
+{
   string username, password1, password2;
   cout << "Register\n";
   cout << "Enter username: ";
   cin >> username;
-  do {
+  do
+  {
 
     cout << "Enter ";
     password1 = getPassword();
 
     cout << "Verify ";
     password2 = getPassword();
-    if (password1 != password2) {
+    if (password1 != password2)
+    {
 
       cout << "Passwords do not match. Please try again.\n";
     }
   } while (password1 != password2);
   password1 = hashpass(password1);
 
-  // Convert string to char*
   int userid = insert_user(con, const_cast<char *>(username.c_str()),
                            const_cast<char *>(password1.c_str()));
   return userid;
 }
 
-int LoginUser() {
+int LoginUser(MYSQL *con)
+{
   string username, password;
   cout << "Login\n";
-  do {
+  do
+  {
     cout << "Enter username: ";
     cin >> username;
     cout << "Enter ";
     password = getPassword();
+    password = hashpass(password);
+    int userid = login_user(con, const_cast<char *>(username.c_str()),
+                            const_cast<char *>(password.c_str()));
   } while (0); // Condition will be Authentication of username and password in
                // database;
   return 1;

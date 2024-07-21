@@ -4,18 +4,28 @@
 
 using namespace std;
 
-int main() {
-  MYSQL con = Connection_establish();
+int main()
+{
+    MYSQL con = Connection_establish();
 
-  int choice;
-  cout << "1. Register\n2. Login\n" << endl;
-  cin >> choice;
-  if (choice == 1) {
-    int UserId = RegisterUser(&con);
-  } else if (choice == 2) {
-    LoginUser();
-  } else {
-    cout << "Invalid choice. Exiting program." << endl;
-  }
-  return 0;
+    int choice, UserId;
+
+    cout << "1. Register\n2. Login\n";
+    cin >> choice;
+    if (choice == 1)
+    {
+        do
+        {
+            UserId = RegisterUser(&con);
+        } while (!UserId);
+    }
+    else if (choice == 2)
+    {
+        LoginUser(&con);
+    }
+    else
+    {
+        cout << "Invalid choice. Exiting program.\n";
+    }
+    return 0;
 }

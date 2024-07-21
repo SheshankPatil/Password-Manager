@@ -6,16 +6,17 @@
 #include <stdlib.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-MYSQL Connection_establish();
-void finish_with_error(MYSQL *con);
-int insert_user(MYSQL *con, char *username, char *password);
-void insert_password(MYSQL *con, int user_id);
-void retrieve_user_password(MYSQL *con, int user_id);
-int login_user(MYSQL *con);
- 
+    MYSQL Connection_establish();
+    void finish_with_error(MYSQL *con);
+    int insert_user(MYSQL *con, char *username, char *password);
+    void insert_password(MYSQL *con, int user_id);
+    void retrieve_user_password(MYSQL *con, int user_id);
+    int login_user(MYSQL *con, char *username, char *password);
+
 #ifdef __cplusplus
 }
 #endif
