@@ -13,8 +13,11 @@ LDFLAGS = -lmysqlclient
 C_SRCS = src/database.c
 CXX_SRCS = src/main.cpp src/password_id.cpp src/user_management.cpp
 
-# Object files
-OBJS = $(C_SRCS:.c=.o) $(CXX_SRCS:.cpp=.o)
+# Object files directory
+OBJ_DIR = obj
+C_OBJS = $(C_SRCS:src/%.c=$(OBJ_DIR)/%.o)
+CXX_OBJS = $(CXX_SRCS:src/%.cpp=$(OBJ_DIR)/%.o)
+OBJS = $(C_OBJS) $(CXX_OBJS)
 
 # Executable
 TARGET = password_manager
@@ -27,13 +30,18 @@ $(TARGET): $(OBJS)
 	$(CXX) $(OBJS) -o $(TARGET) $(LDFLAGS)
 
 # Compile C++ source files
-%.o: %.cpp
+$(OBJ_DIR)/%.o: src/%.cpp | $(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Compile C source files
-%.o: %.c
+$(OBJ_DIR)/%.o: src/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# Create object files directory
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
 
 # Clean up the build
 clean:
 	rm -f $(OBJS) $(TARGET)
+	rm -rf $(OBJ_DIR)

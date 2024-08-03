@@ -21,7 +21,10 @@ int main()
     }
     else if (choice == 2)
     {
-        LoginUser(&con);
+        do
+        {
+            UserId = LoginUser(&con);
+        } while (!UserId);
     }
     else
     {

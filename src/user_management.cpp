@@ -56,16 +56,12 @@ int LoginUser(MYSQL *con)
 {
   string username, password;
   cout << "Login\n";
-  do
-  {
-    cout << "Enter username: ";
-    cin >> username;
-    cout << "Enter ";
-    password = getPassword();
-    password = hashpass(password);
-    int userid = login_user(con, const_cast<char *>(username.c_str()),
-                            const_cast<char *>(password.c_str()));
-  } while (0); // Condition will be Authentication of username and password in
-               // database;
+  cout << "Enter username: ";
+  cin >> username;
+  cout << "Enter ";
+  password = getPassword();
+  password = hashpass(password);
+  int userid = login_user(con, const_cast<char *>(username.c_str()),
+                          const_cast<char *>(password.c_str()));
   return 1;
 }
