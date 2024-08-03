@@ -11,7 +11,7 @@ LDFLAGS = -lmysqlclient
 
 # Source files
 C_SRCS = src/database.c
-CXX_SRCS = src/main.cpp src/password_id.cpp src/user_management.cpp
+CXX_SRCS = src/main.cpp src/password_id.cpp src/user_management.cpp src/encyrpt.cpp
 
 # Object files directory
 OBJ_DIR = obj

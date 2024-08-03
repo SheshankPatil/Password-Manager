@@ -30,5 +30,26 @@ int main()
     {
         cout << "Invalid choice. Exiting program.\n";
     }
+    while (1)
+    {
+        cout << "1. Store Password\n2. Retrieve\n3. Logout\n";
+        cin >> choice;
+        if (choice == 1)
+        {
+            Store_Password(&con, UserId);
+        }
+        else if (choice == 2)
+        {
+            // Retrieve_Password(UserId);
+        }
+        else if (choice == 3)
+        {
+            break;
+        }
+        else
+        {
+            cout << "Invalid choice.\n";
+        }
+    }
     return 0;
 }

@@ -10,5 +10,7 @@ using namespace std;
 string getPassword();
 int RegisterUser(MYSQL *con);
 int LoginUser(MYSQL *con);
+void Store_Password(MYSQL *con, int UserID);
+// void Retrieve_Password(int UserID);
 
 #endif // USER_MANAGEMENT_H

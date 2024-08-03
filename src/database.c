@@ -21,8 +21,9 @@ MYSQL Connection_establish()
         exit(1);
     }
 
-    if (mysql_real_connect(con, "localhost", "root", "password",
-                           "password_manager", 0, NULL, 0) == NULL)
+    if (mysql_real_connect(con, "localhost", "root", "mysql@BHI512",
+                           "password_manager",
+                           0, NULL, 0) == NULL)
     {
         finish_with_error(con);
     }
@@ -71,20 +72,8 @@ int insert_user(MYSQL *con, char username[50], char master_password_hash[255])
 }
 
 // Function to insert a new password entry for a user
-void insert_password(MYSQL *con, int user_id)
+void insert_password(MYSQL *con, int user_id, char site_name[100], char site_username[100], char encrypted_password[255])
 {
-    char site_name[100];
-    char site_username[100];
-    char encrypted_password[255];
-
-    // Input for passwords table
-    printf("Enter site name: ");
-    scanf("%99s", site_name);
-    printf("Enter site username: ");
-    scanf("%99s", site_username);
-    printf("Enter encrypted password: ");
-    scanf("%254s", encrypted_password);
-
     char password_query[1024];
     int n = snprintf(password_query, sizeof(password_query),
                      "INSERT INTO passwords(user_id, site_name, site_username, encrypted_password) VALUES(%d, '%s', '%s', '%s')",

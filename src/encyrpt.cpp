@@ -36,6 +36,6 @@ string decryption(const string &password, const string &enc, const string &maste
     else
     {
         cerr << "Decryption failed!" << endl;
-        return -1; 
+        return "";
     }
 }
