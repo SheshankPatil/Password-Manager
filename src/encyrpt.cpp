@@ -4,11 +4,11 @@
 #include "../include/password_id.h"
 
 using namespace std;
-string encryption(const string &password, const string &text, const string &master_pass)
+string encryption(const string &text, const string &master_pass)
 {
     string command =
         "echo -n \"" + text +
-        "\" | openssl enc -aes-256-cbc -e -base64 -pbkdf2 -pass pass:" + password;
+        "\" | openssl enc -aes-256-cbc -e -base64 -pbkdf2 -pass pass:" + master_pass;
     string encText = executeCommand(command);
     if (!encText.empty())
     {
@@ -21,12 +21,12 @@ string encryption(const string &password, const string &text, const string &mast
     return encText;
 }
 
-string decryption(const string &password, const string &enc, const string &master_pass)
+string decryption(const string &enc, const string &master_pass)
 
 {
     string command =
         "echo \"" + enc +
-        "\" | openssl enc -aes-256-cbc -d -base64 -pbkdf2 -pass pass:" + password;
+        "\" | openssl enc -aes-256-cbc -d -base64 -pbkdf2 -pass pass:" + master_pass;
     string decText = executeCommand(command);
     if (!decText.empty())
     {

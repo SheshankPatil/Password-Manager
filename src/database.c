@@ -21,7 +21,7 @@ MYSQL Connection_establish()
         exit(1);
     }
 
-    if (mysql_real_connect(con, "localhost", "root", "mysql@BHI512",
+    if (mysql_real_connect(con, "localhost", "root", "password",
                            "password_manager",
                            0, NULL, 0) == NULL)
     {
@@ -67,7 +67,6 @@ int insert_user(MYSQL *con, char username[50], char master_password_hash[255])
 
     int user_id = mysql_insert_id(con);
     printf("User data inserted successfully. User ID: %d\n", user_id);
-
     return user_id;
 }
 
@@ -95,17 +94,8 @@ void insert_password(MYSQL *con, int user_id, char site_name[100], char site_use
 }
 
 // Function to retrieve a user's password entry based on site name and username
-void retrieve_user_password(MYSQL *con, int user_id)
+void retrieve_user_password(MYSQL *con, int user_id, char site_name[100], char site_username[100])
 {
-    char site_name[100];
-    char site_username[100];
-
-    // Input for site name and username
-    printf("Enter site name: ");
-    scanf("%99s", site_name);
-    printf("Enter site username: ");
-    scanf("%99s", site_username);
-
     char query[512];
     snprintf(query, sizeof(query),
              "SELECT encrypted_password FROM passwords WHERE user_id = %d AND site_name = '%s' AND site_username = '%s'",

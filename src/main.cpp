@@ -40,7 +40,7 @@ int main()
         }
         else if (choice == 2)
         {
-            // Retrieve_Password(UserId);
+            Retrieve_Password(&con, UserId);
         }
         else if (choice == 3)
         {

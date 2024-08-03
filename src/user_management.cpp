@@ -78,3 +78,13 @@ void Store_Password(MYSQL *con, int UserID)
   password = hashpass(password);
   insert_password(con, UserID, const_cast<char *>(Site_name.c_str()), const_cast<char *>(Site_username.c_str()), const_cast<char *>(password.c_str()));
 }
+
+void Retrieve_Password(MYSQL *con, int UserID)
+{
+  string Site_name, Site_username;
+  cout << "Enter Site Name\n";
+  cin >> Site_name;
+  cout << "Enter username\n";
+  cin >> Site_username;
+  retrieve_user_password(con, UserID, const_cast<char *>(Site_name.c_str()), const_cast<char *>(Site_username.c_str()));
+}
