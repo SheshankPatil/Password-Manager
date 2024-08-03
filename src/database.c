@@ -162,3 +162,42 @@ int login_user(MYSQL *con, char username[50], char master_password_hash[255])
         return 0;
     }
 }
+
+char* get_master_password_hash(MYSQL *con, int user_id)
+{
+    char query[256];
+    snprintf(query, sizeof(query), "SELECT master_password_hash FROM users WHERE user_id = %d", user_id);
+
+    if (mysql_query(con, query))
+    {
+        finish_with_error(con);
+    }
+
+    MYSQL_RES *result = mysql_store_result(con);
+    if (result == NULL)
+    {
+        finish_with_error(con);
+    }
+
+    MYSQL_ROW row = mysql_fetch_row(result);
+    char *hash = NULL;
+
+    if (row)
+    {
+        hash = strdup(row[0]);
+        if (hash == NULL)
+        {
+            fprintf(stderr, "Memory allocation error\n");
+            mysql_free_result(result);
+            mysql_close(con);
+            exit(1);
+        }
+    }
+    else
+    {
+        printf("No master password hash found for the given user ID.\n");
+    }
+
+    mysql_free_result(result);
+    return hash;
+}
