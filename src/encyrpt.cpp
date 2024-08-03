@@ -21,7 +21,8 @@ string encryption(const string &password, const string &text, const string &mast
     return encText;
 }
 
-int decryption(const string &password, const string &enc, const string &master_pass)
+string decryption(const string &password, const string &enc, const string &master_pass)
+
 {
     string command =
         "echo \"" + enc +
@@ -30,11 +31,11 @@ int decryption(const string &password, const string &enc, const string &master_p
     if (!decText.empty())
     {
         cout << "Decrypted text: " << decText << endl;
-        return 0; // Successful decryption
+        return decText;
     }
     else
     {
         cerr << "Decryption failed!" << endl;
-        return -1; // Decryption failed
+        return -1; 
     }
 }
