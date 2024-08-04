@@ -12,7 +12,7 @@ string encryption(const string &text, const string &master_pass)
     string encText = executeCommand(command);
     if (!encText.empty())
     {
-        cout << encText << endl;
+        cout << "Password Encrypted" << endl;
     }
     else
     {

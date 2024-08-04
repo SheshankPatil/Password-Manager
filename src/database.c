@@ -66,7 +66,7 @@ int insert_user(MYSQL *con, char username[50], char master_password_hash[255])
     }
 
     int user_id = mysql_insert_id(con);
-    printf("User data inserted successfully. User ID: %d\n", user_id);
+    printf("User data inserted successfully.\n");
     return user_id;
 }
 
@@ -94,7 +94,7 @@ void insert_password(MYSQL *con, int user_id, char site_name[100], char site_use
 }
 
 // Function to retrieve a user's password entry based on site name and username
-void retrieve_user_password(MYSQL *con, int user_id, char site_name[100], char site_username[100])
+char *retrieve_user_password(MYSQL *con, int user_id, char site_name[100], char site_username[100])
 {
     char query[512];
     snprintf(query, sizeof(query),
@@ -114,17 +114,13 @@ void retrieve_user_password(MYSQL *con, int user_id, char site_name[100], char s
     }
 
     MYSQL_ROW row = mysql_fetch_row(result);
-
-    if (row)
-    {
-        printf("Encrypted password: %s\n", row[0]);
-    }
-    else
+    if (!row)
     {
         printf("No password found for the given site and username.\n");
     }
 
     mysql_free_result(result);
+    return row[0];
 }
 
 int login_user(MYSQL *con, char username[50], char master_password_hash[255])
@@ -153,7 +149,7 @@ int login_user(MYSQL *con, char username[50], char master_password_hash[255])
 
     if (row)
     {
-        printf("Login successful. User ID: %s\n", row[0]);
+        printf("Login successful.\n");
         return atoi(row[0]);
     }
     else
@@ -163,7 +159,7 @@ int login_user(MYSQL *con, char username[50], char master_password_hash[255])
     }
 }
 
-char* get_master_password_hash(MYSQL *con, int user_id)
+char *get_master_password_hash(MYSQL *con, int user_id)
 {
     char query[256];
     snprintf(query, sizeof(query), "SELECT master_password_hash FROM users WHERE user_id = %d", user_id);
