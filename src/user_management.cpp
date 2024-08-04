@@ -69,13 +69,14 @@ int LoginUser(MYSQL *con)
 void Store_Password(MYSQL *con, int UserID)
 {
   string Site_name, Site_username, password;
-  cout << "Enter Site Name\n";
+  cout << "Enter Site Name: ";
   cin >> Site_name;
-  cout << "Enter username\n";
+  cout << "Enter username: ";
   cin >> Site_username;
   cout << "Enter ";
   password = getPassword();
-  password = hashpass(password);
+  string master_pass = get_master_password_hash(con, UserID);
+  password = encryption(password, master_pass);
   insert_password(con, UserID, const_cast<char *>(Site_name.c_str()), const_cast<char *>(Site_username.c_str()), const_cast<char *>(password.c_str()));
 }
 
@@ -86,5 +87,8 @@ void Retrieve_Password(MYSQL *con, int UserID)
   cin >> Site_name;
   cout << "Enter username\n";
   cin >> Site_username;
-  retrieve_user_password(con, UserID, const_cast<char *>(Site_name.c_str()), const_cast<char *>(Site_username.c_str()));
+  string master_pass = get_master_password_hash(con, UserID);
+  char *pass = retrieve_user_password(con, UserID, const_cast<char *>(Site_name.c_str()), const_cast<char *>(Site_username.c_str()));
+  string password(pass);
+  password = decryption(password, master_pass);
 }
